@@ -6,16 +6,16 @@ interface User {
   active: boolean;
   avatar: base64string;
 }
-interface currentUserProps {
+export interface currentUserProps {
   user: User | null | undefined;
   accessToken: string;
 }
-interface PropLogin {
+export interface PropLogin {
   currentUser: currentUserProps | null;
   isFetching: boolean;
   error: boolean;
 }
-interface PropLogOut {
+export interface PropLogOut {
   isFetching: boolean;
   error: boolean;
 }

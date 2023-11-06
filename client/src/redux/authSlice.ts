@@ -1,3 +1,4 @@
+import { PropLogOut, PropLogin, currentUserProps } from "@/interface";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 const login: PropLogin = {

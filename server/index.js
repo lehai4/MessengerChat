@@ -17,12 +17,7 @@ const app = express();
 app.use("/v1/uploads", express.static(__dirname + "/src/uploads"));
 const port = `${process.env.PORT}` | 8000;
 
-app.use(
-  cors({
-    credentials: true,
-    origin: `${process.env.CLIENT_URL}`,
-  })
-);
+app.use(cors());
 app.use(express.json());
 app.use(
   express.urlencoded({

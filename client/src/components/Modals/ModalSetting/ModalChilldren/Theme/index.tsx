@@ -3,6 +3,7 @@ import { Selected } from "@/components";
 import { useTheme } from "@mui/material";
 import { Divider, Typography } from "antd";
 import React, { useContext, useState } from "react";
+import { Option } from "@/interface";
 
 const themeOption = [
   {

@@ -8,6 +8,7 @@ import {
 import AvatarFriend from "@/components/Avatar";
 import CarouselOver from "@/components/Carousel";
 import { useAppSelector } from "@/hooks/hooks";
+import { User } from "@/interface";
 import {
   AudioFilled,
   FileFilled,

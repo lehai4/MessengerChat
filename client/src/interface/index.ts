@@ -1,10 +1,10 @@
-interface User {
+export interface User {
   _id: string;
   phone: string;
   password: string;
   name: string;
   active: boolean;
-  avatar: base64string;
+  avatar: string;
 }
 export interface currentUserProps {
   user: User | null | undefined;
@@ -19,7 +19,7 @@ export interface PropLogOut {
   isFetching: boolean;
   error: boolean;
 }
-interface Option {
+export interface Option {
   value: string;
   label: string;
 }

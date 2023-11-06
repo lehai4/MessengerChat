@@ -1,5 +1,6 @@
 import { Select } from "antd";
 import { SizeType } from "antd/es/config-provider/SizeContext";
+import { Option } from "@/interface";
 type SelectedProps = {
   options: Option[];
   value: Option;

@@ -3,13 +3,11 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
-// const route = require("./src/routes");
-// const db = require("./src/config/db");
-// const Message = require("./src/app/models/Message");
-const route = require("../src/routes");
-const db = require("../src/config/db");
+const route = require("./src/routes");
+const db = require("./src/config/db");
+const Message = require("./src/app/models/Message");
+
 const jwt = require("jsonwebtoken");
-const Message = require("../src/app/models/Message");
 const ws = require("ws");
 const fs = require("fs");
 //Connect db
@@ -17,10 +15,16 @@ db.connect();
 
 dotenv.config();
 const app = express();
-app.use("/v1/uploads", express.static(__dirname + "../src/uploads"));
+app.use("/v1/uploads", express.static(__dirname + "./src/uploads"));
 const port = `${process.env.PORT}` | 8000;
 
-app.use(cors());
+app.use(
+  cors({
+    methods: ["GET", "OPTIONS", "PATCH", "DELETE", "POST", "PUT"],
+    credentials: true,
+    origin: `${process.env.CLIENT_URL}`,
+  })
+);
 app.use(express.json());
 app.use(
   express.urlencoded({

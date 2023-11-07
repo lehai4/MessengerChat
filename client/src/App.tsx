@@ -14,6 +14,7 @@ const { Sider } = Layout;
 
 function App() {
   axios.defaults.baseURL = "http://localhost:8000/v1";
+  axios.defaults.withCredentials = true;
   const dispatch = useAppDispatch();
 
   const dataLogin = useAppSelector((state) => state.auth.login.currentUser);

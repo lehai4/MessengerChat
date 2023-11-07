@@ -1,7 +1,6 @@
 import VideoCallIcon from "@mui/icons-material/VideoCall";
 import { SvgIcon } from "@mui/material";
 import { Button, Typography } from "antd";
-import { CaretLeftOutlined } from "@ant-design/icons";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import AvatarFriend from "../Avatar";
@@ -43,11 +42,16 @@ const CarouselOver = ({
     <Carousel
       responsive={responsive}
       transitionDuration={500}
-      arrows
       infinite
-      renderArrowsWhenDisabled
-      customLeftArrow={<CaretLeftOutlined />}
-      customRightArrow={<CaretLeftOutlined />}
+      swipeable={false}
+      draggable={false}
+      autoPlaySpeed={1000}
+      keyBoardControl={true}
+      slidesToSlide={1}
+      containerClass="carousel-container"
+      removeArrowOnDeviceType={["tablet", "mobile"]}
+      dotListClass="custom-dot-list-style"
+      itemClass="carousel-item-padding-40-px"
     >
       <div className="flex flex-col text-center items-center justify-between gap-2">
         <Button

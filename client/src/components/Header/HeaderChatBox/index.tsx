@@ -1,5 +1,5 @@
 import AvatarFriend from "@/components/Avatar";
-import { EllipsisOutlined } from "@ant-design/icons";
+import { EllipsisOutlined, CloseOutlined } from "@ant-design/icons";
 import CallIcon from "@mui/icons-material/Call";
 import SearchIcon from "@mui/icons-material/Search";
 import VideocamIcon from "@mui/icons-material/Videocam";
@@ -10,25 +10,21 @@ const { Option } = Select;
 
 type HeaderChatBoxProps = {
   selectedUser: any;
+  nameUser: string[];
   mode: string;
   colors: any;
   prepareChat: boolean;
-  newToggleUserChat: boolean;
   optionsSelectChat: any[];
-  refSelectHeader: any;
   setNameUser: (data: string[]) => void;
-  setNewToggleUserChat: (flag: boolean) => void;
 };
 const HeaderChatBox = ({
   selectedUser,
   mode,
+  nameUser,
   colors,
   prepareChat,
-  refSelectHeader,
-  newToggleUserChat,
   optionsSelectChat,
   setNameUser,
-  setNewToggleUserChat,
 }: HeaderChatBoxProps) => {
   return (
     <Space
@@ -120,20 +116,59 @@ const HeaderChatBox = ({
             Đến:
           </Typography.Text>
           <Select
+            autoFocus
+            allowClear
+            defaultOpen
+            size="large"
             mode="multiple"
+            className="text-base"
+            placeholder="Nhập tên"
+            bordered={false}
+            value={nameUser}
+            suffixIcon={null}
+            popupMatchSelectWidth={false}
             style={{
-              minWidth: 320,
+              minWidth: 100,
               color: colors.secondary[100],
             }}
-            allowClear
-            bordered={false}
-            size="large"
-            suffixIcon={null}
-            placeholder="Nhập tên"
-            className="text-base"
-            ref={refSelectHeader}
-            onFocus={() => setNewToggleUserChat(!newToggleUserChat)}
+            tagRender={(item) => {
+              return (
+                <div
+                  className="ant-select-selection-item"
+                  style={{
+                    background: mode === "dark" ? "rgb(33,33,33)" : "",
+                  }}
+                >
+                  <span
+                    className="ant-select-selection-item-content"
+                    style={{
+                      color: mode === "dark" ? "white" : "black",
+                    }}
+                  >
+                    {item.value}
+                  </span>
+                  <span className="ant-select-selection-item-remove">
+                    <CloseOutlined
+                      onClick={() => {
+                        let result = [...nameUser].filter(
+                          (c) => c !== item.value
+                        );
+                        setNameUser(result);
+                      }}
+                      style={{
+                        color: mode === "dark" ? "white" : "black",
+                      }}
+                    />
+                  </span>
+                </div>
+              );
+            }}
             onChange={(e) => setNameUser(e)}
+            filterOption={(input, option: any) =>
+              option.props.children
+                .toLowerCase()
+                .indexOf(input.toLowerCase()) >= 0
+            }
           >
             {optionsSelectChat.map((option, i) => (
               <Option value={option.name} label={option.name} key={i}>

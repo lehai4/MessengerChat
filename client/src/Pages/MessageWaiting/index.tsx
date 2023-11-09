@@ -1,12 +1,11 @@
 import { tokens } from "@/Context/theme";
 import HeaderUser from "@/components/Header/HeaderUser";
 import { useTheme } from "@mui/material";
-import { Layout, Segmented } from "antd";
+import { Segmented } from "antd";
 import { SegmentedValue } from "antd/es/segmented";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-const { Content } = Layout;
 const options = [
   {
     label: "Có thể bạn biết",
@@ -28,10 +27,10 @@ const MessageWaiting = () => {
   useEffect(() => {
     setTimeout(() => {
       toast.info("Trang này tạm thời chưa sử dụng!!");
-    }, 3000);
+    }, 1000);
   }, []);
   return (
-    <Content>
+    <>
       <div
         style={{
           width: 270,
@@ -48,6 +47,8 @@ const MessageWaiting = () => {
         }}
       >
         <HeaderUser
+          mode={mode}
+          colors={colors}
           valueSearch={valueSearch}
           setValueSearch={setValueSearch}
           title={`${
@@ -68,7 +69,15 @@ const MessageWaiting = () => {
           />
         </div>
       </div>
-    </Content>
+      {/* Content Chat */}
+      <div
+        className="flex-1 w-full relative"
+        style={{
+          background: colors.primary[100],
+          color: colors.secondary[100],
+        }}
+      ></div>
+    </>
   );
 };
 

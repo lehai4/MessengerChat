@@ -1,11 +1,8 @@
 import HeaderUser from "@/components/Header/HeaderUser";
 import { useTheme } from "@mui/material";
-import { Layout } from "antd";
 import { useEffect, useState } from "react";
 import { tokens } from "@/Context/theme";
 import { toast } from "react-toastify";
-
-const { Content } = Layout;
 
 const Store = () => {
   const theme = useTheme();
@@ -15,10 +12,10 @@ const Store = () => {
   useEffect(() => {
     setTimeout(() => {
       toast.info("Trang này tạm thời chưa sử dụng!!");
-    }, 3000);
+    }, 1000);
   }, []);
   return (
-    <Content>
+    <>
       <div
         style={{
           width: 270,
@@ -35,14 +32,22 @@ const Store = () => {
         }}
       >
         <HeaderUser
+          mode={mode}
+          colors={colors}
           title={"Store"}
           valueSearch={valueSearch}
           setValueSearch={setValueSearch}
         />
       </div>
       {/* Content Chat */}
-      <div className="flex-1 w-full relative"></div>
-    </Content>
+      <div
+        className="flex-1 w-full relative"
+        style={{
+          background: colors.primary[100],
+          color: colors.secondary[100],
+        }}
+      ></div>
+    </>
   );
 };
 

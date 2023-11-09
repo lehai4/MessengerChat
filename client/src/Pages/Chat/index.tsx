@@ -55,7 +55,6 @@ const Chat = () => {
 
   const divUnderMessages = useRef<HTMLDivElement>(null);
   const inputRefMessage = useRef<InputRef>(null);
-  const refSelectHeader = useRef<any>(null);
 
   const [ws, setWs] = useState<WebSocket | null>();
   const [option, setOption] = useState<string>("");
@@ -64,7 +63,6 @@ const Chat = () => {
   const [nameUser, setNameUser] = useState<string[]>([]);
   const [userResearchChat, setUserResearchChat] = useState<User[]>([]);
   const [prepareChat, setPrepareChat] = useState<boolean>(false);
-  const [newToggleUserChat, setNewToggleUserChat] = useState<boolean>(false);
   const [collectionChat, setCollectionChat] = useState<any[]>([]);
   const [optionsSelectChat, setOptionsSelectChat] = useState<Options[]>([]);
 
@@ -103,18 +101,17 @@ const Chat = () => {
     setRadio(value);
   };
   const handleTexting = () => {
+    let format = [...peopleOnOffCarousel];
+
+    if (prepareChat) {
+      setOptionsSelectChat(optionsSelectChat);
+    } else {
+      setOptionsSelectChat((prev: any) => {
+        return [...prev, ...format];
+      });
+    }
     setPrepareChat(true);
     setSelectedUser({});
-    let format = [...peopleOnOffCarousel];
-    setOptionsSelectChat((prev: any) => {
-      return [...prev, ...format];
-    });
-    setTimeout(() => {
-      if (refSelectHeader.current) {
-        refSelectHeader.current.focus();
-      }
-    }, 1000);
-    setNewToggleUserChat(!newToggleUserChat);
   };
   const handleSearch = async () => {
     try {
@@ -335,7 +332,12 @@ const Chat = () => {
     connectToWs();
     getAllCollectionChat();
   }, []);
-
+  useEffect(() => {
+    toast.info("Chức năng soạn tin nhắn đã ngưng hoạt động!");
+    setTimeout(() => {
+      toast.info("Xin lỗi vì sự bất tiện này!");
+    }, 3000);
+  }, [nameUser]);
   return (
     <React.Fragment>
       <div
@@ -511,13 +513,11 @@ const Chat = () => {
         <HeaderChatBox
           mode={mode}
           colors={colors}
+          nameUser={nameUser}
           prepareChat={prepareChat}
-          newToggleUserChat={newToggleUserChat}
-          refSelectHeader={refSelectHeader}
           selectedUser={selectedUser}
           optionsSelectChat={optionsSelectChat}
           setNameUser={setNameUser}
-          setNewToggleUserChat={setNewToggleUserChat}
         />
 
         {/* Khung chat */}

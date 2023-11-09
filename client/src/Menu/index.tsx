@@ -74,6 +74,7 @@ const MenuBar = () => {
       style={{
         background: "inherit",
         color: mode === "dark" ? colors.secondary[200] : "black",
+        border: "none",
       }}
     />
   );

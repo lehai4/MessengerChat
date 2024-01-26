@@ -139,7 +139,23 @@ const Chat = () => {
     setUserResearchChat([]);
     setValueSearch("");
   };
-  const showOnlinePeople = (peopleArray: any[]) => {
+
+  const handleMessage = (e: any) => {
+    const messageData = JSON.parse(e.data);
+    // console.log("messageData", messageData);
+    if ("online" in messageData) {
+      console.log("checked online or off");
+      showOnlinePeople(messageData.online);
+    } else if ("text" in messageData) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          ...messageData,
+        },
+      ]);
+    }
+  };
+  const showOnlinePeople = async (peopleArray: any[]) => {
     //Filter userId sameple
     const uniqueIds: any[] = [];
     const unique: User[] = peopleArray.filter((element) => {
@@ -157,22 +173,25 @@ const Chat = () => {
         return c;
       }
     });
-    // console.log("peopleOnline", result);
+
+    let allUser = await axios({
+      method: "GET",
+      url: `/users/getAllUser`,
+      headers: {
+        "Content-Type": "application/json",
+        credentials: "include",
+        withCredentials: true,
+        token: `Bearer ${dataUser?.accessToken}`,
+      },
+    });
+
+    const offline: User[] = allUser.data
+      .filter((c: any) => c._id !== dataUser?.user?._id)
+      .filter((p: any) => !result.map((op) => op._id).includes(p._id));
+
+    setPeopleOffline(offline);
     setPeopleOnline(result);
-  };
-  const handleMessage = (e: any) => {
-    const messageData = JSON.parse(e.data);
-    // console.log("messageData", messageData);
-    if ("online" in messageData) {
-      showOnlinePeople(messageData.online);
-    } else if ("text" in messageData) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          ...messageData,
-        },
-      ]);
-    }
+    await getAllCollectionChat();
   };
   const sendMessage = (e: any, file: any = null) => {
     if (e) e.preventDefault();
@@ -256,37 +275,7 @@ const Chat = () => {
     });
   };
 
-  useEffect(() => {
-    const concatArr = peopleOnline.concat(peopleOffline);
-    setPeopleOnOffLine(concatArr);
-  }, [peopleOnline, peopleOffline]);
-
-  useEffect(() => {
-    // check user send mess
-    const compareWithIdYour = messagesAll.filter((data: any) => {
-      return data.sender === dataUser?.user?._id;
-    });
-    // filter Data Same
-    const uniqueIds: any[] = [];
-    const unique: any[] = compareWithIdYour.filter((element: any) => {
-      const isDuplicate = uniqueIds.includes(element.recipient);
-
-      if (!isDuplicate) {
-        uniqueIds.push(element.recipient);
-        return true;
-      }
-      return false;
-    });
-
-    // check id of User === id User receive for Show Chat Collection
-    let result = peopleOnOffLine.filter((object1) => {
-      return unique.some((object2) => {
-        return object1._id === object2.recipient;
-      });
-    });
-    setCollectionChat(result);
-  }, [messagesAll]);
-
+  // call api when user click button username
   useEffect(() => {
     if (selectedUser) {
       axios
@@ -306,38 +295,49 @@ const Chat = () => {
     if (div) {
       div?.scrollIntoView({ behavior: "smooth", block: "end" });
     }
-    getAllCollectionChat();
   }, [messages]);
 
   useEffect(() => {
-    axios({
-      method: "GET",
-      url: `/users/getAllUser`,
-      headers: {
-        "Content-Type": "application/json",
-        credentials: "include",
-        withCredentials: true,
-        token: `Bearer ${dataUser?.accessToken}`,
-      },
-    }).then((res) => {
-      const offlinePeopleArr: User[] = res.data
-        .filter((c: any) => c._id !== dataUser?.user?._id)
-        .filter((p: any) => !peopleOnline.map((op) => op._id).includes(p._id));
-
-      setPeopleOffline(offlinePeopleArr);
+    // check user send mess
+    const compareWithIdYour = messagesAll.filter((data: any) => {
+      return data.sender === dataUser?.user?._id;
     });
-  }, [peopleOnline]);
 
+    // filter Data Same
+    const uniqueIds: any[] = [];
+    const unique: any[] = compareWithIdYour.filter((element: any) => {
+      const isDuplicate = uniqueIds.includes(element.recipient);
+
+      if (!isDuplicate) {
+        uniqueIds.push(element.recipient);
+        return true;
+      }
+      return false;
+    });
+
+    // check id of User === id User receive for Show Chat Collection
+    console.log({ peopleOnOffLine });
+    let result = peopleOnOffLine.filter((object1) => {
+      return unique.some((object2) => {
+        return object1._id === object2.recipient;
+      });
+    });
+    console.log({ result });
+    setCollectionChat(result);
+  }, [messagesAll]);
+
+  //concat if state peopleOnline or peopleOffline change
+  useEffect(() => {
+    const concatArr = peopleOnline.concat(peopleOffline);
+
+    setPeopleOnOffLine(concatArr);
+  }, [peopleOnline, peopleOffline]);
+
+  //run websocket.io
   useEffect(() => {
     connectToWs();
-    getAllCollectionChat();
   }, []);
-  useEffect(() => {
-    toast.info("Chức năng soạn tin nhắn đã ngưng hoạt động!");
-    setTimeout(() => {
-      toast.info("Xin lỗi vì sự bất tiện này!");
-    }, 3000);
-  }, [nameUser]);
+
   return (
     <React.Fragment>
       <div

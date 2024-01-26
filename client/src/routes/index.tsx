@@ -1,4 +1,4 @@
-import { Chat, MarketPlace, MessageWaiting, Store } from "@/Pages";
+import { Chat } from "@/Pages";
 import { Authentication } from "@/components";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { getProfile } from "@/redux/api/apiRequest";
@@ -34,9 +34,6 @@ const Router: React.FunctionComponent<IRouterProps> = () => {
         }
       />
       <Route path="/auth" element={<Authentication />} />
-      <Route path="/marketplace" element={<MarketPlace />} />
-      <Route path="/waiting-message" element={<MessageWaiting />} />
-      <Route path="/store" element={<Store />} />
     </Routes>
   );
 };

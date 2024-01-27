@@ -229,13 +229,25 @@ const Authentication = () => {
               </Form.Item>
 
               <Form.Item className="flex justify-end">
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  className="bg-blue-500"
-                >
-                  Register
-                </Button>
+                <div className="flex flex-row gap-4">
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className="bg-blue-500"
+                    onClick={() => {
+                      setLabel("Login");
+                    }}
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className="bg-blue-500"
+                  >
+                    Register
+                  </Button>
+                </div>
               </Form.Item>
             </>
           )}

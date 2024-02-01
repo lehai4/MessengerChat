@@ -1,18 +1,7 @@
 import { useAppDispatch } from "@/hooks/hooks";
+import { upLoadToCloudinary } from "@/redux/api/actionUpload";
 import { signInUser } from "@/redux/api/apiRequest";
-import resizeFile from "@/utils/resizeImage";
-import { UploadOutlined } from "@ant-design/icons";
-import {
-  Button,
-  Form,
-  Image,
-  Input,
-  Space,
-  Typography,
-  Upload,
-  UploadFile,
-  UploadProps,
-} from "antd";
+import { Button, Form, Input, Space, Typography } from "antd";
 import { Content } from "antd/es/layout/layout";
 import Link from "antd/es/typography/Link";
 import axios from "axios";
@@ -27,27 +16,38 @@ type FieldType = {
   active?: boolean;
 };
 
+const cloud_name = "dv5sji2vb";
+
+const url = `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`;
 const Authentication = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [label, setLabel] = useState<string>("Login");
-  const [file, setFile] = useState<UploadFile | any>();
-  const [imageUser, setImageUser] = useState<any>("");
+  const [file, setFile] = useState<any>();
 
   const onFinish = async (values: any) => {
     if (label === "Login") {
       await signInUser(values, dispatch, navigate);
     } else if (label === "Register") {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "c2aaobet");
+
+      let res: any = await upLoadToCloudinary(formData, url);
+
+      const { imageObject } = res;
+
       let data = {
         ...values,
-        avatar: imageUser,
+        avatar: `https://res.cloudinary.com/${cloud_name}/image/upload/${imageObject?.public_id}.${imageObject?.format}`,
       };
       try {
         await axios({
           method: "POST",
           url: "/auth/register",
           data,
+          withCredentials: true,
         });
         setLabel("Login");
         toast.success("Register successfully!");
@@ -57,25 +57,10 @@ const Authentication = () => {
     }
   };
 
-  const handleChangeFile = async (e: any) => {
-    try {
-      const resizeFIle = await resizeFile(e.file, 25, 25, 10);
-      // console.log(resizeFIle);
-      setImageUser(resizeFIle);
-    } catch (err) {
-      console.log(err);
-    }
+  const handleChangeFile = (e: any) => {
+    setFile(e.target.files[0]);
   };
-  const props: UploadProps = {
-    onRemove: () => {
-      setFile(null);
-      setImageUser("");
-    },
-    beforeUpload: (file) => {
-      setFile(file);
-      return false;
-    },
-  };
+
   return (
     <Content className="max-h-screen m-auto">
       <div
@@ -217,15 +202,22 @@ const Authentication = () => {
                 <Input size="large" />
               </Form.Item>
 
-              <Form.Item<FieldType> label="Avatar" name="avatar">
-                <Upload
-                  {...props}
-                  onChange={handleChangeFile}
+              <Form.Item<FieldType>
+                label="Avatar"
+                name="avatar"
+                rules={[
+                  { required: true },
+                  {
+                    message: "Please input your avatar",
+                  },
+                ]}
+              >
+                <Input
+                  type="file"
+                  size="large"
                   accept=".jpg, .png, .jpeg"
-                >
-                  <Button icon={<UploadOutlined />}>Select File</Button>
-                </Upload>
-                {file && imageUser && <Image src={imageUser} />}
+                  onChange={handleChangeFile}
+                />
               </Form.Item>
 
               <Form.Item className="flex justify-end">

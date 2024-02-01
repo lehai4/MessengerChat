@@ -16,6 +16,7 @@ export const signInUser = async (user: any, dispatch: any, navigate: any) => {
       method: "POST",
       url: `/auth/signIn`,
       data: user,
+      withCredentials: true,
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -39,6 +40,8 @@ export const getProfile = async (
     const res: any = await axios({
       method: "GET",
       url: `/users/user/profile/${id}`,
+      withCredentials: true,
+
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -57,6 +60,7 @@ export const logOut = async (dispatch: any, navigate: any) => {
     await axios({
       method: "POST",
       url: `/auth/logout`,
+      withCredentials: true,
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",

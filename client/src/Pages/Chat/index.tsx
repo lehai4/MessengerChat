@@ -142,9 +142,7 @@ const Chat = () => {
 
   const handleMessage = (e: any) => {
     const messageData = JSON.parse(e.data);
-    // console.log("messageData", messageData);
     if ("online" in messageData) {
-      console.log("checked online or off");
       showOnlinePeople(messageData.online);
     } else if ("text" in messageData) {
       setMessages((prev) => [
@@ -279,7 +277,9 @@ const Chat = () => {
   useEffect(() => {
     if (selectedUser) {
       axios
-        .get("/messages/message/" + `${selectedUser?._id}`)
+        .get("/messages/message/" + `${selectedUser?._id}`, {
+          withCredentials: true,
+        })
         .then((res) => {
           setMessages(res.data);
         })
@@ -316,13 +316,11 @@ const Chat = () => {
     });
 
     // check id of User === id User receive for Show Chat Collection
-    console.log({ peopleOnOffLine });
     let result = peopleOnOffLine.filter((object1) => {
       return unique.some((object2) => {
         return object1._id === object2.recipient;
       });
     });
-    console.log({ result });
     setCollectionChat(result);
   }, [messagesAll]);
 

@@ -53,13 +53,15 @@ wss.on("connection", (connection, req) => {
     [...wss.clients].forEach((client) => {
       client.send(
         JSON.stringify({
-          online: [...wss.clients].map((c) => ({
-            _id: c._id,
-            name: c.name,
-            avatar: c.avatar,
-            active: c.active,
-            phone: c.phone,
-          })),
+          online: [...wss.clients].map((c) => {
+            return {
+              _id: c._id,
+              name: c.name,
+              avatar: c.avatar,
+              active: c.active,
+              phone: c.phone,
+            };
+          }),
         })
       );
     });
@@ -83,7 +85,7 @@ wss.on("connection", (connection, req) => {
 
   // read data form the cookie for this connection
   const cookies = req.headers.cookie;
-  // console.log("REQUEST", req);
+
   if (cookies) {
     const tokenCookieString = cookies
       .split(";")

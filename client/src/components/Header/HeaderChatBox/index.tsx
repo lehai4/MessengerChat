@@ -60,7 +60,7 @@ const HeaderChatBox = ({
                   color: colors.secondary[100],
                 }}
               >
-                {selectedUser?.name}
+                {selectedUser?.name ? selectedUser.name : "No name"}
               </Typography.Text>
               <Typography.Text
                 className="leading-none font-normal"

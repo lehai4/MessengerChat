@@ -6,16 +6,17 @@ const cookieParser = require("cookie-parser");
 const route = require("./src/routes");
 const db = require("./src/config/db");
 const Message = require("./src/app/models/Message");
-
-const jwt = require("jsonwebtoken");
-const ws = require("ws");
+var path = require("path");
 const fs = require("fs");
 //Connect db
 db.connect();
 
 dotenv.config();
 const app = express();
-app.use("/v1/uploads", express.static(__dirname + "./src/uploads"));
+app.use(
+  "/v1/uploads",
+  express.static(path.resolve(__dirname + "./src/uploads"))
+);
 const port = `${process.env.PORT}` | 8000;
 
 app.use(
@@ -45,76 +46,41 @@ app.get("/home", (req, res) => {
 const server = app.listen(port, () => {
   console.log(`Server run with port http://localhost:${port}`);
 });
+// socket
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    credentials: true,
+  },
+});
 
-const wss = new ws.WebSocketServer({ server });
+let users = [];
 
-wss.on("connection", (connection, req) => {
-  function notifyAboutOnlinePeople() {
-    [...wss.clients].forEach((client) => {
-      client.send(
-        JSON.stringify({
-          online: [...wss.clients].map((c) => {
-            return {
-              _id: c._id,
-              name: c.name,
-              avatar: c.avatar,
-              active: c.active,
-              phone: c.phone,
-            };
-          }),
-        })
-      );
-    });
-  }
-  connection.isAlive = true;
+const addUser = (userData, socketId) => {
+  return (
+    !users.some((u) => u._id === userData._id) &&
+    users.push({ userData, socketId })
+  );
+};
+const removeUser = (socketId) => {
+  users = users.filter((user) => user.socketId !== socketId);
+};
 
-  connection.timer = setInterval(() => {
-    connection.ping();
-    connection.deathTimer = setTimeout(() => {
-      connection.isAlive = false;
-      clearInterval(connection.timer);
-      connection.terminate();
-      notifyAboutOnlinePeople();
-      console.log("dead");
-    }, 1000);
-  }, 5000);
+io.on("connection", (socket) => {
+  //when ceonnect
+  console.log("a user connected.");
 
-  connection.on("pong", () => {
-    clearTimeout(connection.deathTimer);
+  //take userId and socketId from user
+  socket.on("addUser", (userData) => {
+    addUser(userData, socket.id);
+    io.emit("getUsers", users);
   });
 
-  // read data form the cookie for this connection
-  const cookies = req.headers.cookie;
-
-  if (cookies) {
-    const tokenCookieString = cookies
-      .split(";")
-      .find((str) => str.startsWith("token="));
-    if (tokenCookieString) {
-      const token = tokenCookieString.split("=")[1];
-      if (token) {
-        jwt.verify(
-          token,
-          `${process.env.JWT_ACCESS_KEY}`,
-          {},
-          (err, userData) => {
-            if (err) throw err;
-            const { _id, name, avatar, phone } = userData;
-            // console.log(userData);
-            connection._id = _id;
-            connection.name = name;
-            connection.avatar = avatar;
-            connection.active = true;
-            connection.phone = phone;
-          }
-        );
-      }
-    }
-  }
-  // send messages
-  connection.on("message", async (message) => {
+  //send and get message
+  socket.on("sendMessage", async (message) => {
     const messageData = JSON.parse(message.toString());
-    const { recipient, text, file } = messageData;
+    const { recipient, sender, text, file } = messageData;
+
     let filename = null;
     if (file) {
       console.log("size", file.data.length);
@@ -128,31 +94,22 @@ wss.on("connection", (connection, req) => {
       });
     }
     if (recipient && (text || file)) {
-      const messageDoc = await Message.create({
-        sender: connection._id,
+      await Message.create({
+        sender: sender,
         recipient,
         text,
         file: file ? filename : null,
       });
       console.log("created message");
-
-      [...wss.clients]
-        .filter((c) => c._id === recipient)
-        .forEach((c) =>
-          c.send(
-            JSON.stringify({
-              text,
-              sender: connection._id,
-              recipient,
-              file: file ? filename : null,
-              _id: messageDoc._id,
-            })
-          )
-        );
     }
   });
-  // notify everyone about online people
-  notifyAboutOnlinePeople();
+
+  //when disconnect
+  socket.on("disconnect", () => {
+    console.log("a user disconnected!");
+    removeUser(socket.id);
+    io.emit("getUsers", users);
+  });
 });
 
 module.exports = app;

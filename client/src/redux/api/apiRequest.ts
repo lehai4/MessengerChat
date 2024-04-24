@@ -16,7 +16,7 @@ export const signInUser = async (user: any, dispatch: any, navigate: any) => {
       method: "POST",
       url: `/auth/signIn`,
       data: user,
-      withCredentials: true,
+      // withCredentials: true,
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -39,8 +39,8 @@ export const getProfile = async (
   try {
     const res: any = await axios({
       method: "GET",
-      url: `/users/user/profile/${id}`,
-      withCredentials: true,
+      url: `/users/profile/${id}`,
+      // withCredentials: true,
 
       headers: {
         "Content-Type": "application/json",
@@ -60,7 +60,7 @@ export const logOut = async (dispatch: any, navigate: any) => {
     await axios({
       method: "POST",
       url: `/auth/logout`,
-      withCredentials: true,
+      // withCredentials: true,
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -68,7 +68,7 @@ export const logOut = async (dispatch: any, navigate: any) => {
       },
     });
     dispatch(logOutSuccess());
-    navigate("/auth");
+    navigate("/auth/login");
   } catch (err) {
     dispatch(logOutFailure());
   }

@@ -20,6 +20,15 @@ const userController = {
   //get[/id]
   getUserById: async (req, res) => {
     try {
+      const user = await User.findById(req.params.id);
+      res.status(200).json(user);
+    } catch (err) {
+      res.status(404).json(err);
+    }
+  },
+  //get[/id]
+  getProfileByIdOfMe: async (req, res) => {
+    try {
       const token = req.headers.token || req.body.headers.token;
       const accessToken = token.split(" ")[1];
       const user = await User.findById(req.params.id);

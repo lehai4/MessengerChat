@@ -33,7 +33,7 @@ const middlewareController = {
   // getUserDataFromRequest
   getUserDataFromRequest: async (req) => {
     return new Promise((resolve, reject) => {
-      const token = req.cookies?.token;
+      const token = req.token.split(" ")[1] || req.authorization.split(" ")[1];
       if (token) {
         jwt.verify(
           token,

@@ -32,7 +32,7 @@ const Authentication = () => {
     } else if (label === "Register") {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("upload_preset", "c2aaobet");
+      formData.append("upload_preset", "jmjqbvfw");
 
       let res: any = await upLoadToCloudinary(formData, url);
 

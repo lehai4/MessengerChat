@@ -16,15 +16,19 @@ function App() {
   axios.defaults.baseURL = "http://localhost:8000/v1";
   const dispatch = useAppDispatch();
 
-  const dataLogin = useAppSelector((state) => state.auth.login.currentUser);
-
+  const userSignIn = useAppSelector((state) => state.auth.login.currentUser);
   const [theme, colorMode] = useMode();
 
   useEffect(() => {
     (async function get() {
-      await getProfile(dataLogin?.user?._id, dataLogin?.accessToken, dispatch);
+      await getProfile(
+        userSignIn?.user?._id,
+        userSignIn?.accessToken,
+        dispatch
+      );
     })();
   }, []);
+
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
@@ -48,7 +52,7 @@ function App() {
               width: "100%",
             }}
           >
-            {dataLogin?.user ? (
+            {userSignIn?.user ? (
               <React.Fragment>
                 <Sider
                   width={80}

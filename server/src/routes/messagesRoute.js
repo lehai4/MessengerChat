@@ -7,6 +7,7 @@ const middlewareController = require("../app/controllers/middlewareController");
 router.get(
   "/message/:userId",
   middlewareController.middlewareCORS,
+  middlewareController.verifyToken,
   messageController.getMessage
 );
 // getAllMessage

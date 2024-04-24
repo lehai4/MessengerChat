@@ -42,14 +42,13 @@ const Setting = () => {
   };
   const handleLogOut = async () => {
     await logOut(dispatch, navigate);
-    window.location.reload();
   };
 
   return (
     <Fragment>
       <Tooltip
         title="Menu trang cá nhân"
-        mouseEnterDelay={0.5}
+        mouseEnterDelay={1}
         color={mode === "dark" ? colors.grey[100] : ""}
       >
         <Popover
@@ -74,7 +73,6 @@ const Setting = () => {
             size="large"
             src={dataUser?.user?.avatar}
             className="absolute bottom-5 left-1/2 -translate-x-1/2 border-0 p-0 cursor-pointer"
-            onClick={() => {}}
           />
         </Popover>
       </Tooltip>

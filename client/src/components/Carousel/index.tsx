@@ -21,29 +21,44 @@ const CarouselOver = ({
   handleSelectedUser,
 }: IndexProps) => {
   const responsive = {
-    superLargerDesktop: {
+    desktop: {
       breakpoint: { max: 3000, min: 1024 },
       items: 4,
-      slidesToSlide: 1, // optional, default to 1.
-    },
-    desktop: {
-      breakpoint: { max: 1024, min: 800 },
-      items: 4,
-      slidesToSlide: 1, // optional, default to 1.
+      partialVisibilityGutter: 40,
     },
     tablet: {
-      breakpoint: { max: 800, min: 464 },
-      items: 4,
-      slidesToSlide: 1, // optional, default to 1.
+      breakpoint: { max: 1024, min: 768 },
+      items: 3,
+      partialVisibilityGutter: 30,
     },
     mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 4,
-      slidesToSlide: 1, // optional, default to 1.
+      breakpoint: { max: 768, min: 464 },
+      items: 1,
+      partialVisibilityGutter: 30,
     },
   };
   return (
-    <Carousel responsive={responsive}>
+    <Carousel
+      additionalTransfrom={0}
+      arrows
+      ssr={true}
+      autoPlaySpeed={1000}
+      centerMode={false}
+      draggable
+      focusOnSelect={false}
+      infinite
+      keyBoardControl
+      minimumTouchDrag={80}
+      pauseOnHover
+      renderArrowsWhenDisabled={false}
+      renderButtonGroupOutside={false}
+      renderDotsOutside={false}
+      autoPlay={true}
+      swipeable={true}
+      partialVisible={false}
+      dotListClass="custom-dot-list-style"
+      responsive={responsive}
+    >
       <div className="flex flex-col text-center items-center justify-between gap-2">
         <Button
           icon={

@@ -21,19 +21,15 @@ const Router: React.FunctionComponent<IRouterProps> = () => {
         path="/"
         element={
           dataLogin?.user === undefined ? (
-            <Navigate to="/auth" />
+            <Navigate to="/auth/login" />
           ) : (
             <Navigate to="/chat" />
           )
         }
       />
-      <Route
-        path="/chat"
-        element={
-          dataLogin?.user === undefined ? <Navigate to="/auth" /> : <Chat />
-        }
-      />
-      <Route path="/auth" element={<Authentication />} />
+      <Route path="/chat" element={<Chat />} />
+      <Route path="/auth/login" element={<Authentication />} />
+      <Route path="/auth/register" element={<Authentication />} />
     </Routes>
   );
 };
